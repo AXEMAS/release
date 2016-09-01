@@ -4,7 +4,8 @@
 
 	var axemas = win['axemas'] = (win['axemas'] || {});
 	axemas._platform_cache = null;
-
+	axemas._platform_details_cache = null;
+	
 	axemas.goto = function (data) {
 		if (typeof data === 'string' || data instanceof String)
 			data = {
@@ -67,6 +68,25 @@
 
 		axemas._platform_cache = platform;
 		return platform;
+	};
+
+	axemas.platformDetails = function (callback) {
+		if (axemas._platform_details_cache !== null)
+			callback(axemas._platform_details_cache);
+
+		var platform_details = {
+			'model': 'unknow',
+			'systemName':'unknow',
+			'systemVersion':'unknow',
+		};
+
+		if (axemas.getPlatform() == 'unsupported') {
+			callback(platform_details);
+		} else 
+			axemas.call('platformDetails', {}, function(res) {
+				axemas._platform_details_cache = res;
+				callback(res);
+			});
 	};
 
 	axemas.storeData = function (key, value) {
